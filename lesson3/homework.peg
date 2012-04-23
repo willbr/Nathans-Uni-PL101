@@ -1,0 +1,34 @@
+start =
+    expression
+
+expression = atom / list / quote
+
+atom =
+    _ chars:validchar+ _
+        { return chars.join(""); }
+
+validchar
+    = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+
+list =
+    _ "(" _ a:expression b:whitespace_expression* _ ")" _
+        {return [a].concat(b);}
+
+_ = 
+    (whitespace / comment)*
+
+whitespace =
+    [ \t\n]
+
+comment = 
+    ";;" [^\n]* "\n"
+        {return;}
+
+whitespace_expression =
+    _ a:expression
+        {return a;}
+
+quote =
+    "'" a:expression
+        {return ["quote", a];}
+
