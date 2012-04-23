@@ -15,8 +15,8 @@ note =
         {return {tag: "note", pitch:pitch, dur:100};}
 
 pitch = 
-    pitch:([a-g][1-9][0-9]?)
-        {return pitch.join("");}
+    pitch:([a-g][#b]?[1-9][0-9]?)
+        {return pitch.join("").toUpperCase();}
 
 duration =
     integer

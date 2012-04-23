@@ -10,7 +10,7 @@ parse = PEG.buildParser(data).parse
 note = (pitch, dur) ->
     dur ?= 100
     tag: "note"
-    pitch:pitch
+    pitch:pitch.toUpperCase()
     dur:dur
 
 seq = (left, right) ->
