@@ -1,0 +1,89 @@
+start =
+    expr
+
+expr = note / seq / par / rest / repeat
+
+_expr = 
+    _ e:expr
+    {return e;}
+
+note = 
+    pitch:pitch _ dur:duration
+        {return {tag: "note", pitch:pitch, dur:dur};}
+    /
+    pitch:pitch
+        {return {tag: "note", pitch:pitch, dur:100};}
+
+pitch = 
+    pitch:([a-g][#b]?[1-9][0-9]?)
+        {return pitch.join("").toUpperCase();}
+
+duration =
+    integer
+
+integer =
+    "0"
+        {return 0;}
+    /
+    a:[1-9]b:[0-9]*
+        {return parseInt(a+b.join(""), 10);}
+
+seq =
+    "[" _ head:expr tail:_expr* _ "]"
+    {
+        var seq = function (left, right) {
+            return {tag: "seq", left:left, right:right};
+        };
+        var list = [head].concat(tail);
+        if (list.length == 1) {
+            return head;
+        } else {
+            var r, right;
+            right = list.splice(-1)[0];
+            r = seq(list.splice(-1)[0], right);
+            while (list.length > 0) {
+                r = seq(list.splice(-1)[0], r);
+            }
+            return r;
+        }
+    }
+
+par = 
+    "(" _ head:note_or_par tail:_note_or_par* _ ")"
+    {
+        var par = function (left, right) {
+            return {tag: "par", left:left, right:right};
+        };
+        var list = [head].concat(tail);
+        if (list.length == 1) {
+            return head;
+        } else {
+            var r, right;
+            right = list.splice(-1)[0];
+            r = par(list.splice(-1)[0], right);
+            while (list.length > 0) {
+                r = par(list.splice(-1)[0], r);
+            }
+            return r;
+        }
+    }
+
+rest =
+    "." _ dur:integer
+    {return {tag:"rest", dur:dur};}
+
+repeat = 
+    ":" _ count:integer _ section:expr
+    {return {tag:"repeat", section:section, count:count};}
+
+note_or_par =
+    note / par
+
+_note_or_par = 
+    _ e:note_or_par
+        {return e;}
+_ =
+    whitespace*
+
+whitespace =
+    [ \t\n]
