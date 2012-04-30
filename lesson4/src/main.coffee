@@ -7,7 +7,7 @@ runCode = ->
         try
             r = document.evalScheem ast, document.env
             console.log r
-            $('#result').text r
+            $('#result').text JSON.stringify r
         catch error
             $('#result').text 'eval failed ' + error
     catch error
@@ -20,7 +20,7 @@ $ ->
     document.parse = PEG.buildParser(document.grammer).parse
     $('#code').val """
     (define a (+ 5 5))
-    (if (= a 10)
+    (if (= a 11)
         'omg_its_ten
         (cdr '(10 11 12)))
     """
