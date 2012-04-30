@@ -181,3 +181,22 @@ suite('evalScheemString', function() {
         );
     });
 });
+
+suite('list', function() {
+    var s1 = "'()";
+    test(s1, function() {
+        assert.deepEqual(
+            parser(s1),
+            ['quote', []]
+        );
+    });
+
+    var s2 = "(quote ())";
+    test(s2, function() {
+        assert.deepEqual(
+            parser(s2),
+            ['quote', []]
+        );
+    });
+});
+

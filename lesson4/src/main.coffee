@@ -8,6 +8,7 @@ runCode = ->
             r = document.evalScheem ast, document.env
             console.log r
             $('#result').text JSON.stringify r
+            $('#env').text JSON.stringify document.env
         catch error
             $('#result').text 'eval failed ' + error
     catch error
@@ -19,10 +20,17 @@ $ ->
     document.env = {}
     document.parse = PEG.buildParser(document.grammer).parse
     $('#code').val """
-    (define a (+ 5 5))
-    (if (= a 10)
-        'omg_its_ten
-        (cdr '(10 11 12)))
+    ;;This is my Scheem Toy test for http://nathansuniversity.com
+
+    (define four (car '(4 5 6 7)))
+
+    (define ten (begin
+               (define six 6)
+               (+ four six)))
+
+    (if (= ten 10)
+        'its_ten
+        'its_not_ten)
     """
     document.myCodeMirror = CodeMirror.fromTextArea document.getElementById('code'),
         mode: "scheme"

@@ -11,7 +11,8 @@
       try {
         r = document.evalScheem(ast, document.env);
         console.log(r);
-        return $('#result').text(JSON.stringify(r));
+        $('#result').text(JSON.stringify(r));
+        return $('#env').text(JSON.stringify(document.env));
       } catch (error) {
         return $('#result').text('eval failed ' + error);
       }
@@ -24,7 +25,7 @@
   $(function() {
     document.env = {};
     document.parse = PEG.buildParser(document.grammer).parse;
-    $('#code').val("(define a (+ 5 5))\n(if (= a 10)\n    'omg_its_ten\n    (cdr '(10 11 12)))");
+    $('#code').val(";;This is my Scheem Toy test for http://nathansuniversity.com\n\n(define four (car '(4 5 6 7)))\n\n(define ten (begin\n           (define six 6)\n           (+ four six)))\n\n(if (= ten 10)\n    'its_ten\n    'its_not_ten)");
     document.myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
       mode: "scheme",
       lineNumbers: true,

@@ -27,8 +27,10 @@ validchar
     = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
 list =
-    _ "(" _ a:expression b:whitespace_expression* _ ")" _
-        {return [a].concat(b);}
+    _ "(" _ a:expression? b:whitespace_expression* _ ")" _
+        {
+            return a === "" ? [] : [a].concat(b);
+        }
 
 _ = 
     (whitespace / comment)*
