@@ -33,14 +33,19 @@ compile = (musexpr) ->
     r
 
 $ ->
+    code = $ '#code'
+    if code.val().length is 0
+        code.val(":2[(e4 e5) (g4 g5) (a5 a6)]")
+        puts code.val()
     $('#play').click runClick
     mashup.parse = PEG.buildParser(grammer).parse
     return
 
-playNote = (delay, frequency, duration) ->
+playNote = (delay, pitch, duration) ->
+    f = Note.fromLatin(pitch).frequency()
     wait delay, ->
-        puts delay, frequency, duration
-        playExample frequency, duration
+        puts delay, pitch, duration
+        playExample f, duration
 
 
 runClick = ->
@@ -50,8 +55,7 @@ runClick = ->
     end = 0
     for note in list
         end = Math.max end, note.start + note.dur
-        f = Note.fromLatin(note.pitch).frequency()
-        playNote note.start, f, note.dur
+        playNote note.start, note.pitch, note.dur
     wait end, ->
         puts "fin"
     return
