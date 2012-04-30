@@ -1,9 +1,17 @@
-PEG = require 'pegjs'
-puts = console.log
+if module?
+    PEG = require 'pegjs'
 
 data = """
 start =
-    expression
+    e:expression+
+    {
+        if (e.length === 1) {
+            return e[0];
+        } else {
+            e.unshift("begin");
+            return e;
+        }
+    }
 
 expression = integer / atom / list / quote
 
@@ -39,11 +47,19 @@ whitespace_expression =
 quote =
     "'" a:expression
         {return ["quote", a];}
-
+    /
+    "quote" _+ a:expression
+        {return ["quote", a];}
 """
-parser = PEG.buildParser(data).parse
+
+if module?
+    parser = PEG.buildParser(data).parse
+else
+    $ ->
+        document.grammer = data
 
 
-if typeof module != 'undefined'
+
+if module?
     module.exports.parser = parser
 

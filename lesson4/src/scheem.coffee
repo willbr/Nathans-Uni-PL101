@@ -1,5 +1,6 @@
-parser = require('./parser').parser
-expect = require('chai').expect
+if module?
+    parser = require('./parser').parser
+    expect = require('chai').expect
 
 evalScheemString = (s, env) ->
     return evalScheem parser(s), env
@@ -54,8 +55,11 @@ evalScheem = (expr, env) ->
             tail.unshift head
             return tail
 
-if typeof module != 'undefined'
+if module?
     module.exports.evalScheem = evalScheem
     module.exports.parser = parser
     module.exports.evalScheemString = evalScheemString
+
+if document?
+    document.evalScheem = evalScheem
 
