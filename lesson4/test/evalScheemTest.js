@@ -1,7 +1,7 @@
 if (typeof module !== 'undefined') {
     // In Node load required modules
     var assert = require('chai').assert;
-    var evalScheem = require('../scheem').evalScheem;
+    var evalScheem = require('../js/scheem').evalScheem;
 } else {
     // In browser assume already loaded by <script> tags
     var assert = chai.assert;
