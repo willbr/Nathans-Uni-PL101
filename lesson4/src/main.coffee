@@ -20,7 +20,7 @@ $ ->
     document.parse = PEG.buildParser(document.grammer).parse
     $('#code').val """
     (define a (+ 5 5))
-    (if (= a 11)
+    (if (= a 10)
         'omg_its_ten
         (cdr '(10 11 12)))
     """
