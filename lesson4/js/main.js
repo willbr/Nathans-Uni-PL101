@@ -36,6 +36,7 @@
     });
     console.log('main ready');
     $('#runButton').click(runCode);
+    runCode();
   });
 
 }).call(this);

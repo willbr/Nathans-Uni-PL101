@@ -33,4 +33,5 @@ $ ->
             "Ctrl-Enter": runCode
     console.log 'main ready'
     $('#runButton').click runCode
+    runCode()
     return
