@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <title>
+        Scheem Toy
+    </title>
+    <style>
+        textarea {
+            width: 800px;
+            height: 100px;
+        }
+        .mono {
+            font-family: monospace;
+            font-size: xx-large;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+    <script src="lib/peg-0.7.0.js"></script>
+    <script src="lib/codemirror.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="lib/scheme.js"></script>
+    <script src="js/parser.js"></script>
+    <script src="js/scheem.js"></script>
+    <body class="mono">
+        <h1>Scheem Toy</h1>
+        <p>
+        Type code, then press "CTRL-Enter" or click the Run button.
+        </p>
+        <form action="">
+            <textarea id="code"></textarea>
+        </form>
+        <button id="runButton" class="mono">Run</button>
+        <h2>Result:</h2>
+        <div id="result">
+            None
+        </div>
+        <h2>AST:</h2>
+        <div id="ast">
+            None
+        </div>
+        <script type="text/javascript" src="js/main.js">Javascript failed to load.</script>
+    </body>
+</html>
