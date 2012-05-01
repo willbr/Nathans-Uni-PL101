@@ -2,28 +2,78 @@ if module?
     parser = require('./parser').parser
     expect = require('chai').expect
 
+
+#CoffeeScript Cookbook
+clone = (obj) ->
+    if not obj? or typeof obj isnt 'object'
+        return obj
+
+    if obj instanceof Date
+        return new Date(obj.getTime())
+
+    if obj instanceof RegExp
+        flags = ''
+        flags += g if obj.global?
+        flags += i if obj.ignoreCase?
+        flags += m if obj.multiline?
+        flags += y if obj.sticky?
+        return new RegExp(obj.source, flags)
+
+    newInstance = new obj.constructor()
+
+    for key of obj
+        newInstance[key] = clone obj[key]
+
+    return newInstance
+
+
+lambda = (args, code, env) ->
+    func = ->
+        for i in [0...args.length]
+            env[args[i]] = arguments[i]
+        evalScheem code, env
+    func.args = args
+    func.code = code
+    return func
+
+
 evalScheemString = (s, env) ->
-    return evalScheem parser(s), env
+    ast = parser s
+    return evalScheem ast, env
+
 
 evalScheem = (expr, env) ->
     # Numbers evaluate to themselves
-    if typeof expr == 'number'
-        return expr
-    if typeof expr == 'string'
-        return env[expr]
+    switch typeof(expr)
+        when 'number'
+            return expr
+        when 'string'
+            return env[expr]
     # Look at head of list for operation
     switch expr[0]
         when '='
             q = evalScheem(expr[1], env) == evalScheem(expr[2], env)
             return if q then '#t' else '#f'
+        when '!='
+            q = evalScheem(expr[1], env) != evalScheem(expr[2], env)
+            return if q then '#t' else '#f'
         when '+'
             return evalScheem(expr[1], env) +
+                   evalScheem(expr[2], env)
+        when '-'
+            return evalScheem(expr[1], env) -
                    evalScheem(expr[2], env)
         when '*'
             return evalScheem(expr[1], env) *
                    evalScheem(expr[2], env)
+        when '/'
+            return evalScheem(expr[1], env) /
+                   evalScheem(expr[2], env)
         when '<'
             q = evalScheem(expr[1], env) < evalScheem(expr[2], env)
+            return if q then '#t' else '#f'
+        when '>'
+            q = evalScheem(expr[1], env) > evalScheem(expr[2], env)
             return if q then '#t' else '#f'
         when 'if'
             q = evalScheem(expr[1], env)
@@ -31,8 +81,6 @@ evalScheem = (expr, env) ->
                 return evalScheem expr[2], env
             else
                 return evalScheem expr[3], env
-
-
         when 'quote'
             return expr[1]
         when 'define'
@@ -54,6 +102,14 @@ evalScheem = (expr, env) ->
             tail = evalScheem expr[2], env
             tail.unshift head
             return tail
+        when 'lambda'
+            return lambda expr[1], expr[2], env
+        else
+            proc = expr[0]
+            tail = clone expr
+            tail.shift()
+            return env[proc]?.apply null, (evalScheem a, env for a in tail)
+
 
 if module?
     module.exports.evalScheem = evalScheem

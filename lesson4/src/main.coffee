@@ -1,14 +1,24 @@
+stringify = (x) ->
+    JSON.stringify x, escape, " "
+
+escape = (k,v) ->
+    type = typeof(v)
+    switch type
+        when "function"
+            return 'lambda'
+        else
+            return v
+    return v
+
 runCode = ->
     data = document.myCodeMirror.getValue()
     try
         ast = document.parse data
-        console.log ast
-        $('#ast').text JSON.stringify ast
+        $('#ast').text stringify ast
         try
             r = document.evalScheem ast, document.env
-            console.log r
-            $('#result').text JSON.stringify r
-            $('#env').text JSON.stringify document.env
+            $('#result').text stringify r
+            $('#env').text stringify document.env
         catch error
             $('#result').text 'eval failed ' + error
     catch error
@@ -22,15 +32,11 @@ $ ->
     $('#code').val """
     ;;This is my Scheem Toy test for http://nathansuniversity.com
 
-    (define four (car '(4 5 6 7)))
-
-    (define ten (begin
-               (define six 6)
-               (+ four six)))
-
-    (if (= ten 10)
-        'its_ten
-        'its_not_ten)
+    (define factorial (lambda (n)
+                        (if (= n 1)
+                            1
+                            (* n (factorial (- n 1))))))
+    (factorial 6)
     """
     document.myCodeMirror = CodeMirror.fromTextArea document.getElementById('code'),
         mode: "scheme"
@@ -39,7 +45,6 @@ $ ->
         autofocus: true
         extraKeys:
             "Ctrl-Enter": runCode
-    console.log 'main ready'
     $('#runButton').click runCode
     runCode()
     return

@@ -16,15 +16,15 @@ start =
 expression = integer / atom / list / quote
 
 integer = 
-    _ chars:[0-9]+ _
-        { return parseInt(chars.join(""), 10); }
+    _ sign:[\-+]? chars:[0-9]+ _
+        { return parseInt(sign + chars.join(""), 10); }
 
 atom =
     _ chars:validchar+ _
         { return chars.join(""); }
 
 validchar
-    = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+    = [0-9a-zA-Z_?!+\-=<>@#$%^&*/\.]
 
 list =
     _ "(" _ a:expression? b:whitespace_expression* _ ")" _

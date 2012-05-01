@@ -200,3 +200,34 @@ suite('list', function() {
     });
 });
 
+suite('truthy', function() {
+    var s1 = "(= 5 5)";
+    test(s1, function() {
+        assert.deepEqual(
+            evalScheemString(s1, {}),
+            '#t'
+        );
+    });
+    var s2 = "(!= 5 5)";
+    test(s2, function() {
+        assert.deepEqual(
+            evalScheemString(s2),
+            '#f'
+        );
+    });
+    var s3 = "(> 5 5)";
+    test(s3, function() {
+        assert.deepEqual(
+            evalScheemString(s3),
+            '#f'
+        );
+    });
+    var s4 = "(< 5 5)";
+    test(s4, function() {
+        assert.deepEqual(
+            evalScheemString(s4),
+            '#f'
+        );
+    });
+});
+
